@@ -1,5 +1,5 @@
-var sede = 'AQP';
-var turma = '2016-2';
+var sede = 'CDMX';
+var turma = '2017-1';
 var studentsTotal = totalAndInactives();
 
 // Contar o total de alunas ativas e inativas
@@ -16,18 +16,21 @@ function totalAndInactives(){
   inactivesPercent += (inactives/totalStudents * 100);
   activesPercent += 100% - inactivesPercent;
   var total = [activesPercent,inactivesPercent]
-  return total;
+  pieGraph(total);
 }
 
+function pieGraph(value) {
 google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
+google.charts.setOnLoadCallback(function () {
+  drawChart(value);
+});
+  function drawChart(valueGraph) {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Status');
     data.addColumn('number', 'Porcentagem');
     data.addRows([
-      ['Ativas', studentsTotal[0]],
-      ['Inativas', studentsTotal[1]]
+      ['Ativas', valueGraph[0]],
+      ['Inativas', valueGraph[1]]
     ]);
 
     var options = {'title':'Total e Desistencia',
@@ -37,7 +40,7 @@ google.charts.setOnLoadCallback(drawChart);
     var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
     chart.draw(data, options);
 }
-
+}
 
 
 // console.log(data[sede][turma]['students'][i]['name'] + "-" + data[sede]['2016-2']['students'][i]['active']);
