@@ -1,3 +1,23 @@
-/*
- * Estilos de tu proyecto
- */
+body {
+    background-color: #f5f5f5;
+    display: flex;
+}
+
+aside {
+    background-color: #fff;
+    width: 250px;
+}
+
+.profile {
+    padding: 30px;
+}
+
+.profile img {
+    width: 100%;
+}
+
+.item {
+    background-color: #fff;
+    padding: 30px;
+    margin: 30px;
+}

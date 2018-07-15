@@ -238,18 +238,16 @@ dataTest = {
 
 // Contar a porcentagem de alunas ativas e inativas
 function totalAndInactives(){
-  var activesPercent = 0;
-  var inactivesPercent = 0;
   var inactives = 0;
+  var actives = 0;
 	var totalStudents = data[sede][turma]['students'].length;
 	for (i in data[sede][turma]['students']){
 		if (data[sede][turma]['students'][i]['active'] === false){
 			inactives += 1;
 		}
   }
-  inactivesPercent += (inactives/totalStudents * 100);
-  activesPercent += 100% - inactivesPercent;
-  var total = [activesPercent,inactivesPercent]
+  actives = totalStudents - inactives; 
+  var total = [actives,inactives]
   pieGraph(total);
 }
 
@@ -294,8 +292,6 @@ function scoreHSE(){
         }
       }
     }
-    console.log(scoreTotal)
-    console.log("função hse")
     hseGraph(scoreTotal);
   }
 
@@ -326,9 +322,10 @@ function pieGraph(value) {
     ]);
     var options = {'title':'Total e Desistencia',
                     'width':400,
-                    'height':300};
+                    'height':300,
+                     pieHole: 0.3,};
 
-    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    var chart = new google.visualization.PieChart(document.getElementById('chart-totalInactives'));
     chart.draw(data, options);
   }
 }
@@ -361,7 +358,7 @@ function techGraph(value) {
       }
     };
 
-    var chart = new google.charts.Line(document.getElementById('chart_div1'));
+    var chart = new google.charts.Line(document.getElementById('chart-techScore'));
     chart.draw(data, google.charts.Line.convertOptions(options));
   }
 }
@@ -394,7 +391,7 @@ function hseGraph(value) {
       }
     };
 
-    var chart = new google.charts.Line(document.getElementById('chart_div2'));
+    var chart = new google.charts.Line(document.getElementById('chart-hseScore'));
     chart.draw(data, google.charts.Line.convertOptions(options));
   }
   console.log("grafico hse")
@@ -429,7 +426,7 @@ function npsGraph(value){
       }
     };
 
-    var chart = new google.charts.Line(document.getElementById('chart_div3'));
+    var chart = new google.charts.Line(document.getElementById('chart-NPS'));
     chart.draw(data, google.charts.Line.convertOptions(options));
   }
 }
