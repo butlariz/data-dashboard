@@ -1,6 +1,9 @@
 var sede = 'AQP';
 var turma = '2016-2';
-var studentsTotal = totalAndInactives();
+totalAndInactives();
+scoreTech();
+scoreHSE();
+nps();
 
 dataTest = {
   'AQP': {
@@ -250,6 +253,64 @@ function totalAndInactives(){
   pieGraph(total);
 }
 
+// Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
+function scoreTech(){
+totalStudents = data[sede][turma]['students'].length
+  var sprintsHitGoal = [];
+  var percentHitGoal = [];
+  for (i in data[sede][turma]['students']){
+    for (j in data[sede][turma]['students'][i]['sprints']){
+      if (data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
+        if (sprintsHitGoal[j] >= 0) {
+          sprintsHitGoal[j] += 1;
+          percentHitGoal[j] += (1 / totalStudents);
+        } else if (!sprintsHitGoal[j]){
+          sprintsHitGoal[j] = 1;
+          percentHitGoal[j] = (1 / totalStudents);
+          var scoreTotal = [percentHitGoal, sprintsHitGoal]
+         }
+      }
+    }
+  }
+  techGraph(scoreTotal);
+}
+
+// Contar a porcentagem de alunas que excederam a pontuação HSE por sprint
+function scoreHSE(){
+  totalStudents = data[sede][turma]['students'].length
+    var sprintsHitGoal = [];
+    var percentHitGoal = [];
+    for (i in data[sede][turma]['students']){
+      for (j in data[sede][turma]['students'][i]['sprints']){
+        if (data[sede][turma]['students'][i]['sprints'][j]['score']['hse'] >= 840){ 
+          if (sprintsHitGoal[j] >= 0) {
+            sprintsHitGoal[j] += 1;
+            percentHitGoal[j] += (1 / totalStudents);
+          } else if (!sprintsHitGoal[j]){
+            sprintsHitGoal[j] = 1;
+            percentHitGoal[j] = (1 / totalStudents);
+            var scoreTotal = [percentHitGoal, sprintsHitGoal]
+           }
+        }
+      }
+    }
+    console.log(scoreTotal)
+    console.log("função hse")
+    hseGraph(scoreTotal);
+  }
+
+// Calcular NPS por Sprint 
+function nps(){
+  var sprintNPS = [];
+  for (i in data[sede][turma]['ratings']){
+    var resultNPS = 0;
+    resultNPS = data[sede][turma]['ratings'][i]['nps']['promoters'] - data[sede][turma]['ratings'][i]['nps']['detractors'];
+    sprintNPS.push(resultNPS/100);
+  }
+  npsGraph(sprintNPS);
+}
+
+// Gráficos 
 function pieGraph(value) {
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(function(){
@@ -269,57 +330,109 @@ function pieGraph(value) {
 
     var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
     chart.draw(data, options);
-}
-}
-
-scoreTech();
-// Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
-function scoreTech(){
-totalStudents = data[sede][turma]['students'].length
-  var sprintsHitGoal = [];
-  var percentHitGoal = [];
-  for (i in data[sede][turma]['students']){
-    for (j in data[sede][turma]['students'][i]['sprints']){
-      if (data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
-        if (sprintsHitGoal[j] >= 0) {
-          sprintsHitGoal[j] += 1;
-          percentHitGoal[j] += (1 / totalStudents * 100);
-        } else if (!sprintsHitGoal[j]){
-          sprintsHitGoal[j] = 1;
-          percentHitGoal[j] = (1 / totalStudents * 100);
-          var scoreTotal = [percentHitGoal, sprintsHitGoal]
-         }
-      }
-    }
   }
-  console.log(scoreTotal);
-  console.log(scoreTotal[0]);
-  console.log(scoreTotal[1])
-  techGraph(scoreTotal);
 }
 
 function techGraph(value) {
-  google.charts.load('current', {'packages':['corechart']});
+  google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
     drawChart(value);
   });
-  function drawChart(valueGraphTech) {
+  function drawChart(valueGraph) {
     var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Status');
-    data.addColumn('number', 'Porcentagem');
+    data.addColumn('string', 'Sprints');
+    data.addColumn('number', 'Students');
     data.addRows([
-      ['Sprint1', valueGraphTech[0][0]],
-      ['Sprint2', valueGraphTech[0][1]],
+      ['Sprint 1',  valueGraph[0][0]],
+      ['Sprint 2',  valueGraph[0][1]],
+      ['Sprint 3',  valueGraph[0][2]],
+      ['Sprint 4',  valueGraph[0][3]]
     ]);
-    var options = {'title':'Notas e excedem',
-                    'width':400,
-                    'height':300};
 
-    var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
-    chart.draw(data, options);
-    }
+    var options = {
+      chart: {
+        title: 'Alunas que excederam a pontuação Tech',
+      },
+      width: 600,
+      height: 500,
+      vAxis: {
+        viewWindow: { min: 0, max: 1 },	
+        format: "percent"
+      }
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_div1'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
+  }
 }
 
+function hseGraph(value) {
+  google.charts.load('current', {'packages':['line']});
+  google.charts.setOnLoadCallback(function(){
+    drawChart(value);
+  });
+  function drawChart(valueGraph) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Sprints');
+    data.addColumn('number', 'Students');
+    data.addRows([
+      ['Sprint 1',  valueGraph[0][0]],
+      ['Sprint 2',  valueGraph[0][1]],
+      ['Sprint 3',  valueGraph[0][2]],
+      ['Sprint 4',  valueGraph[0][3]]
+    ]);
+
+    var options = {
+      chart: {
+        title: 'Alunas que excederam a pontuação HSE',
+      },
+      width: 600,
+      height: 500,
+      vAxis: {
+        viewWindow: { min: 0, max: 1 },	
+        format: "percent"
+      }
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_div2'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
+  }
+  console.log("grafico hse")
+}
+
+function npsGraph(value){
+  google.charts.load('current', {'packages':['line']});
+  google.charts.setOnLoadCallback(function(){
+    drawChart(value);
+  });
+  function drawChart(valueGraph) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Sprints');
+    data.addColumn('number', 'NPS');
+    data.addRows([
+      ['Sprint 1',  valueGraph[0]],
+      ['Sprint 2',  valueGraph[1]],
+      ['Sprint 3',  valueGraph[2]],
+      ['Sprint 4',  valueGraph[3]]
+    ]);
+
+    var options = {
+      chart: {
+        title: 'NPS médio por Sprint',
+      },
+      curveType: 'function',
+      width: 500,
+      height: 300,
+      vAxis: {
+        viewWindow: { min: 0, max: 1 },	
+        format: "percent"
+      }
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_div3'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
+  }
+}
 
 
 //console.log(data[sede][turma]['students'][i]['name'] + ":" + data[sede][turma]['students'][i]['sprints'][0]['score']['tech'])
