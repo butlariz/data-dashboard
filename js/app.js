@@ -288,33 +288,36 @@ totalStudents = data[sede][turma]['students'].length
           sprintsHitGoal[j] = 1;
           percentHitGoal[j] = (1 / totalStudents * 100);
           var scoreTotal = [percentHitGoal, sprintsHitGoal]
-          techGraph(scoreTotal);
-          console.log(scoreTotal);
          }
-     function techGraph(value) {
-   google.charts.load('current', {'packages':['corechart']});
-   google.charts.setOnLoadCallback(function(){
-     drawChart(value);
-   });
-   function drawChart(valueGraphTech) {
-     var data = new google.visualization.DataTable();
-     data.addColumn('string', 'Status');
-     data.addColumn('number', 'Porcentagem');
-     data.addRows([
-       ['Sprint1', valueGraphTech[0]],
-       ['Sprint2', valueGraphTech[1]],
-     ]);
-     var options = {'title':'Notas e excedem',
-                     'width':400,
-                     'height':300};
- 
-     var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
-     chart.draw(data, options);
-          }
-        }
       }
     }
   }
+  console.log(scoreTotal);
+  console.log(scoreTotal[0]);
+  console.log(scoreTotal[1])
+  techGraph(scoreTotal);
+}
+
+function techGraph(value) {
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(function(){
+    drawChart(value);
+  });
+  function drawChart(valueGraphTech) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Status');
+    data.addColumn('number', 'Porcentagem');
+    data.addRows([
+      ['Sprint1', valueGraphTech[0][0]],
+      ['Sprint2', valueGraphTech[0][1]],
+    ]);
+    var options = {'title':'Notas e excedem',
+                    'width':400,
+                    'height':300};
+
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
+    chart.draw(data, options);
+    }
 }
 
 
