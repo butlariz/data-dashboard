@@ -10,6 +10,7 @@ teacher();
 
 // Contar a porcentagem de alunas ativas e inativas
 function totalAndInactives(){
+  var nameTotal = "Alunas presentes e desistentes"
   var inactives = 0;
   var actives = 0;
 	var totalStudents = data[sede][turma]['students'].length;
@@ -20,33 +21,35 @@ function totalAndInactives(){
   }
   actives = totalStudents - inactives; 
   var total = [actives,inactives]
-  pieGraph(total);
+  pieGraph(total, nameTotal);
 }
 
 // Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
 function scoreTech(){
-totalStudents = data[sede][turma]['students'].length
-  var sprintsHitGoal = [];
-  var percentHitGoal = [];
-  for (i in data[sede][turma]['students']){
-    for (j in data[sede][turma]['students'][i]['sprints']){
-      if (data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
-        if (sprintsHitGoal[j] >= 0) {
-          sprintsHitGoal[j] += 1;
-          percentHitGoal[j] += (1 / totalStudents);
-        } else if (!sprintsHitGoal[j]){
-          sprintsHitGoal[j] = 1;
-          percentHitGoal[j] = (1 / totalStudents);
-          var scoreTotal = [percentHitGoal, sprintsHitGoal]
-         }
+  var nameTech = "Alunas que excederam a pontuação Tech"
+  totalStudents = data[sede][turma]['students'].length
+    var sprintsHitGoal = [];
+    var percentHitGoal = [];
+    for (i in data[sede][turma]['students']){
+      for (j in data[sede][turma]['students'][i]['sprints']){
+        if (data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
+          if (sprintsHitGoal[j] >= 0) {
+            sprintsHitGoal[j] += 1;
+            percentHitGoal[j] += (1 / totalStudents);
+          } else if (!sprintsHitGoal[j]){
+            sprintsHitGoal[j] = 1;
+            percentHitGoal[j] = (1 / totalStudents);
+            var scoreTotal = [percentHitGoal, sprintsHitGoal]
+          }
+        }
       }
     }
-  }
-  techGraph(scoreTotal);
+  scoreGraph(scoreTotal, nameTech);
 }
 
 // Contar a porcentagem de alunas que excederam a pontuação HSE por sprint
 function scoreHSE(){
+  var nameHSE = "Alunas que excederem a pontuação HSE";
   totalStudents = data[sede][turma]['students'].length
     var sprintsHitGoal = [];
     var percentHitGoal = [];
@@ -64,7 +67,7 @@ function scoreHSE(){
         }
       }
     }
-    hseGraph(scoreTotal);
+    scoreGraph(scoreTotal, nameHSE);
   }
 
 // Calcular NPS por Sprint 
@@ -85,9 +88,9 @@ function teacher(){
     resultTeacher += data[sede][turma]['ratings'][i]['teacher'];
     scoreTeacher = resultTeacher / data[sede][turma]['ratings'].length;
     
-  } console.log(scoreTeacher);
-
+  };
 }
+
 //Calcular nota Jedi
 function jedi(){
   var scoreJedi = 0;
@@ -96,10 +99,7 @@ function jedi(){
   for (i in data[sede][turma]['ratings']){
     resultJedi += data[sede][turma]['ratings'][i]['jedi'];
     scoreJedi = resultJedi / data[sede][turma]['ratings'].length;
-    }
-    console.log(resultJedi);
-    console.log(scoreJedi);
-
+  }
 }
 //Calcular satisfação de Alunas
 function satisfaction(){
@@ -109,12 +109,20 @@ function satisfaction(){
     resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supera'];
     satisfactionStudent.push(resultSatisfaction/100);
   }
-  console.log(resultSatisfaction);
-  console.log(satisfactionStudent);
 }
 
 // Gráficos 
-function pieGraph(value) {
+function pieGraph(value, nameGraph) {
+  var divItem = document.createElement('div');
+  var newGraph = document.createElement('div');
+  var mainContent = document.querySelector('main');
+  var graphTitle = document.createElement('h3');
+  graphTitle.textContent = nameGraph;
+  divItem.className = "item";
+  divItem.appendChild(graphTitle);
+  divItem.appendChild(newGraph);
+  mainContent.appendChild(divItem);
+
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(function(){
     drawChart(value);
@@ -127,17 +135,29 @@ function pieGraph(value) {
       ['Ativas', valueGraph[0]],
       ['Inativas', valueGraph[1]]
     ]);
-    var options = {'title':'Total e Desistencia',
-                    'width':400,
+    var options = { 'width':400,
                     'height':300,
-                     pieHole: 0.3,};
+                    pieSliceTextStyle: {
+                      color: 'black',
+                    },
+                    pieHole: 0.6,};
 
-    var chart = new google.visualization.PieChart(document.getElementById('chart-totalInactives'));
+    var chart = new google.visualization.PieChart(newGraph);
     chart.draw(data, options);
   }
 }
 
-function techGraph(value) {
+function scoreGraph(value, nameGraph) {
+  var divItem = document.createElement('div');
+  var newGraph = document.createElement('div');
+  var mainContent = document.querySelector('main');
+  var graphTitle = document.createElement('h3');
+  graphTitle.textContent = nameGraph;
+  divItem.className = "item";
+  divItem.appendChild(graphTitle);
+  divItem.appendChild(newGraph);
+  mainContent.appendChild(divItem);
+
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
     drawChart(value);
@@ -154,54 +174,16 @@ function techGraph(value) {
     ]);
 
     var options = {
-      chart: {
-        title: 'Alunas que excederam a pontuação Tech',
-      },
       width: 600,
       height: 500,
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
         format: "percent"
       }
-    };
-
-    var chart = new google.charts.Line(document.getElementById('chart-techScore'));
+    }
+    var chart = new google.charts.Line(newGraph);
     chart.draw(data, google.charts.Line.convertOptions(options));
   }
-}
-
-function hseGraph(value) {
-  google.charts.load('current', {'packages':['line']});
-  google.charts.setOnLoadCallback(function(){
-    drawChart(value);
-  });
-  function drawChart(valueGraph) {
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Sprints');
-    data.addColumn('number', 'Students');
-    data.addRows([
-      ['Sprint 1',  valueGraph[0][0]],
-      ['Sprint 2',  valueGraph[0][1]],
-      ['Sprint 3',  valueGraph[0][2]],
-      ['Sprint 4',  valueGraph[0][3]]
-    ]);
-
-    var options = {
-      chart: {
-        title: 'Alunas que excederam a pontuação HSE',
-      },
-      width: 600,
-      height: 500,
-      vAxis: {
-        viewWindow: { min: 0, max: 1 },	
-        format: "percent"
-      }
-    };
-
-    var chart = new google.charts.Line(document.getElementById('chart-hseScore'));
-    chart.draw(data, google.charts.Line.convertOptions(options));
-  }
-  console.log("grafico hse")
 }
 
 function npsGraph(value){
