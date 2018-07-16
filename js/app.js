@@ -4,6 +4,9 @@ totalAndInactives();
 scoreTech();
 scoreHSE();
 nps();
+satisfaction();
+jedi();
+teacher();
 
 dataTest = {
   'AQP': {
@@ -305,6 +308,44 @@ function nps(){
   }
   npsGraph(sprintNPS);
 }
+////Calcular nota teacher
+function teacher(){
+  var scoreTeacher = 0;
+  var resultTeacher =  0;
+  for (i in data[sede][turma]['ratings']){
+    resultTeacher += data[sede][turma]['ratings'][i]['teacher'];
+    scoreTeacher = resultTeacher / data[sede][turma]['ratings'].length;
+    
+  } console.log(scoreTeacher);
+
+}
+//Calcular nota Jedi
+function jedi(){
+  var scoreJedi = 0;
+  var resultJedi = 0;
+
+  for (i in data[sede][turma]['ratings']){
+    resultJedi += data[sede][turma]['ratings'][i]['jedi'];
+    scoreJedi = resultJedi / data[sede][turma]['ratings'].length;
+    }
+    console.log(resultJedi);
+    console.log(scoreJedi);
+
+}
+//Calcular satisfação de Alunas
+function satisfaction(){
+  var satisfactionStudent = [];
+  for (i in data[sede][turma]['ratings']){
+    var resultSatisfaction = 0;
+    resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supera'];
+    satisfactionStudent.push(resultSatisfaction/100);
+  }
+  console.log(resultSatisfaction);
+  console.log(satisfactionStudent);
+}
+
+
+
 
 // Gráficos 
 function pieGraph(value) {
@@ -432,32 +473,7 @@ function npsGraph(value){
 }
 
 
-function teacher(){
-  var scoreTeacher = [];
-  for (i in data[sede][turma]['ratings']){
-    var resultTeacher = 0;
-    resultTeacher = data[sede][turma]['ratings'][i]['teacher'] / data[sede][turma]['ratings'][i]['teacher'].length;
-    scoreTeacher.push(resultTeacher);
-    
-  }
-}
-function jedi(){
-  var scoreJedi = [];
-  for (i in data[sede][turma]['ratings']){
-    var resultJedi = 0;
-    resultJedi = data[sede][turma]['ratings'][i]['jedi'] / data[sede][turma]['ratings'][i]['jedi'].length;
-    scoreJedi.push(resultJedi);
-    
-  }
-}
-function satisfaction(){
-  var satisfactionStudent = [];
-  for (i in data[sede][turma]['ratings']){
-    var resultSatisfaction = 0;
-    resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supere'];
-    satisfactionStudent.push(resultSatisfaction/100);
-  }console.log(satisfactionStudent);
-}
+
 
 
 //console.log(data[sede][turma]['students'][i]['name'] + ":" + data[sede][turma]['students'][i]['sprints'][0]['score']['tech'])
