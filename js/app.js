@@ -7,6 +7,7 @@ nps();
 satisfaction();
 jedi();
 teacher();
+scoreExceed();
 
 // Contar a porcentagem de alunas ativas e inativas
 function totalAndInactives(){
@@ -42,8 +43,30 @@ totalStudents = data[sede][turma]['students'].length
       }
     }
   }
-  techGraph(scoreTotal);
+  scoreGraph(scoreTotal);
 }
+/////Comparação excedem
+
+function scoreExceed(){
+  totalStudents = data[sede][turma]['students'].length
+    var sprintsHitGoal = [];
+    var percentHitGoal = [];
+    for (i in data[sede][turma]['students']){
+      for (j in data[sede][turma]['students'][i]['sprints']){
+        if (data[sede][turma]['students'][i]['sprints'][j]['score']['hse'] >= 840 && data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
+          if (sprintsHitGoal[j] >= 0) {
+            sprintsHitGoal[j] += 1;
+            percentHitGoal[j] += (1 / totalStudents);
+          } else if (!sprintsHitGoal[j]){
+            sprintsHitGoal[j] = 1;
+            percentHitGoal[j] = (1 / totalStudents);
+            var scoreTotal = [percentHitGoal, sprintsHitGoal]
+           }
+        }
+      }
+    }
+    console.log(percentHitGoal);
+  }
 
 // Contar a porcentagem de alunas que excederam a pontuação HSE por sprint
 function scoreHSE(){
@@ -64,7 +87,7 @@ function scoreHSE(){
         }
       }
     }
-    hseGraph(scoreTotal);
+    scoreGraph(scoreTotal);
   }
 
 // Calcular NPS por Sprint 
@@ -85,7 +108,7 @@ function teacher(){
     resultTeacher += data[sede][turma]['ratings'][i]['teacher'];
     scoreTeacher = resultTeacher / data[sede][turma]['ratings'].length;
     
-  } console.log(scoreTeacher);
+  } //console.log(scoreTeacher);
 
 }
 //Calcular nota Jedi
@@ -97,8 +120,8 @@ function jedi(){
     resultJedi += data[sede][turma]['ratings'][i]['jedi'];
     scoreJedi = resultJedi / data[sede][turma]['ratings'].length;
     }
-    console.log(resultJedi);
-    console.log(scoreJedi);
+    //console.log(resultJedi);
+    //console.log(scoreJedi);
 
 }
 //Calcular satisfação de Alunas
@@ -109,8 +132,8 @@ function satisfaction(){
     resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supera'];
     satisfactionStudent.push(resultSatisfaction/100);
   }
-  console.log(resultSatisfaction);
-  console.log(satisfactionStudent);
+  //console.log(resultSatisfaction);
+  //console.log(satisfactionStudent);
 }
 
 // Gráficos 
@@ -137,7 +160,7 @@ function pieGraph(value) {
   }
 }
 
-function techGraph(value) {
+function scoreGraph(value) {
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
     drawChart(value);
@@ -154,9 +177,6 @@ function techGraph(value) {
     ]);
 
     var options = {
-      chart: {
-        title: 'Alunas que excederam a pontuação Tech',
-      },
       width: 600,
       height: 500,
       vAxis: {
