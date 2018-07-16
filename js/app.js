@@ -432,6 +432,34 @@ function npsGraph(value){
 }
 
 
+function teacher(){
+  var scoreTeacher = [];
+  for (i in data[sede][turma]['ratings']){
+    var resultTeacher = 0;
+    resultTeacher = data[sede][turma]['ratings'][i]['teacher'] / data[sede][turma]['ratings'][i]['teacher'].length;
+    scoreTeacher.push(resultTeacher);
+    
+  }
+}
+function jedi(){
+  var scoreJedi = [];
+  for (i in data[sede][turma]['ratings']){
+    var resultJedi = 0;
+    resultJedi = data[sede][turma]['ratings'][i]['jedi'] / data[sede][turma]['ratings'][i]['jedi'].length;
+    scoreJedi.push(resultJedi);
+    
+  }
+}
+function satisfaction(){
+  var satisfactionStudent = [];
+  for (i in data[sede][turma]['ratings']){
+    var resultSatisfaction = 0;
+    resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supere'];
+    satisfactionStudent.push(resultSatisfaction/100);
+  }console.log(satisfactionStudent);
+}
+
+
 //console.log(data[sede][turma]['students'][i]['name'] + ":" + data[sede][turma]['students'][i]['sprints'][0]['score']['tech'])
 // console.log(data[sede][turma]['students'][i]['name'] + "-" + data[sede]['2016-2']['students'][i]['active']);
 // listaProgramadoras.appendChild(img);
