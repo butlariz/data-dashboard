@@ -3,6 +3,10 @@ body {
     display: flex;
 }
 
+h3 {
+    margin: 0px;
+}
+
 aside {
     background-color: #fff;
     width: 250px;
@@ -20,4 +24,14 @@ aside {
     background-color: #fff;
     padding: 30px;
     margin: 30px;
+}
+
+.info-graphic {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-sprint {
+    display: flex;
+    flex-direction: column;
 }

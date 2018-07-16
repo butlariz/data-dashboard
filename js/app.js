@@ -1,5 +1,11 @@
 var sede = 'AQP';
 var turma = '2016-2';
+
+var mainContent = document.querySelector('main');
+var divItem = document.createElement('div');
+var graphTitle = document.createElement('h2');
+var divGraph = document.createElement('div');
+
 totalAndInactives();
 scoreTech();
 scoreHSE();
@@ -37,18 +43,19 @@ function scoreExceed(){
     for (i in data[sede][turma]['students']){
       for (j in data[sede][turma]['students'][i]['sprints']){
         if (data[sede][turma]['students'][i]['sprints'][j]['score']['hse'] >= 840 && data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
-          if (sprintsHitGoal[j] >= 0) {
-            sprintsHitGoal[j] += 1;
+          if (percentHitGoal[j] >= 0) {
             percentHitGoal[j] += (1 / totalStudents);
-          } else if (!sprintsHitGoal[j]){
-            sprintsHitGoal[j] = 1;
+            sprintsHitGoal += 1;
+          } else if (!percentHitGoal[j]){
             percentHitGoal[j] = (1 / totalStudents);
+            sprintsHitGoal = 1;
             var scoreTotal = percentHitGoal
            }
         }
       }
     }
-    sprintGraph(scoreTotal, nameExceed)
+    var mediaExceed = sprintsHitGoal / scoreTotal.length;
+    sprintGraph(scoreTotal, nameExceed, mediaExceed)
   }
 
 // Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
@@ -76,7 +83,7 @@ function scoreTech(){
 
 // Contar a porcentagem de alunas que excederam a pontuação HSE por sprint
 function scoreHSE(){
-  var nameHSE = "Alunas que excederem a pontuação HSE";
+  var nameHSE = "Alunas que excederam a pontuação HSE";
   totalStudents = data[sede][turma]['students'].length
     var sprintsHitGoal = [];
     var percentHitGoal = [];
@@ -155,16 +162,7 @@ function satisfaction(){
 
 // Gráficos 
 function pieGraph(value, nameGraph, status) {
-  var divItem = document.createElement('div');
-  var newGraph = document.createElement('div');
-  var mainContent = document.querySelector('main');
-  var graphTitle = document.createElement('h3');
-  graphTitle.textContent = nameGraph;
-  divItem.className = "item";
-  divItem.appendChild(graphTitle);
-  divItem.appendChild(newGraph);
-  mainContent.appendChild(divItem);
-
+  var newGraph = createHtml(nameGraph);
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(function(){
     drawChart(value, status);
@@ -190,13 +188,27 @@ function pieGraph(value, nameGraph, status) {
 }
 
 function scoreGraph(value, nameGraph) {
-  var divItem = document.createElement('div');
-  var newGraph = document.createElement('div');
   var mainContent = document.querySelector('main');
-  var graphTitle = document.createElement('h3');
+  var divItem = document.createElement('div');
+  var graphTitle = document.createElement('h2');
+  var newGraph = document.createElement('div');
+  var infoGraph = document.createElement('div');
+  infoGraph.className = "info-graphic";
+
+  for(i in value[1]){
+    var counter = parseInt(i);
+    var itemInfo = document.createElement('span');
+    itemInfo.className = "info-sprint"
+    itemInfo.innerHTML  = "<h3>" + value[1][i] + "</h3>"
+    itemInfo.innerHTML += "<span> Students </span>"
+    itemInfo.innerHTML += "<span> Sprint" + (counter + 1) + "</span>"
+    infoGraph.appendChild(itemInfo);
+  }
+
   graphTitle.textContent = nameGraph;
   divItem.className = "item";
   divItem.appendChild(graphTitle);
+  divItem.appendChild(infoGraph);
   divItem.appendChild(newGraph);
   mainContent.appendChild(divItem);
 
@@ -228,16 +240,13 @@ function scoreGraph(value, nameGraph) {
   }
 }
 
-function sprintGraph(value, nameGraph){
-  var divItem = document.createElement('div');
-  var newGraph = document.createElement('div');
-  var mainContent = document.querySelector('main');
-  var graphTitle = document.createElement('h3');
-  graphTitle.textContent = nameGraph;
-  divItem.className = "item";
-  divItem.appendChild(graphTitle);
-  divItem.appendChild(newGraph);
-  mainContent.appendChild(divItem);
+function sprintGraph(value, nameGraph, media){
+  var newGraph = createHtml(nameGraph);
+  var itemInfo = document.createElement('span');
+  itemInfo.innerHTML  = "<h3>" + media + "</h3>"
+  itemInfo.innerHTML += "<span> Média </span>"
+  infoGraph.className = "info-graphic";
+  infoGraph.appendChild(itemInfo);
 
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
@@ -267,4 +276,13 @@ function sprintGraph(value, nameGraph){
     var chart = new google.charts.Line(newGraph);
     chart.draw(data, google.charts.Line.convertOptions(options));
   }
+}
+
+function createHtml(nameGraph){
+  graphTitle.textContent = nameGraph;
+  divItem.className = "item";
+  divItem.appendChild(graphTitle);
+  divItem.appendChild(divGraph);
+  mainContent.appendChild(divItem);
+  return divGraph;
 }
