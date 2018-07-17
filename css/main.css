@@ -34,6 +34,11 @@ h3 {
     margin-bottom: 30px;
 }
 
+span#date {
+    width: 200px;
+    text-align: right;
+}
+
 span.logo {
     position: relative;
     height: 75px;
