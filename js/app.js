@@ -1,19 +1,16 @@
 var sede = 'AQP';
 var turma = '2016-2';
-
 var mainContent = document.querySelector('main');
-var divItem = document.createElement('div');
-var graphTitle = document.createElement('h2');
-var divGraph = document.createElement('div');
 
 totalAndInactives();
+scoreExceed();
+nps();
 scoreTech();
 scoreHSE();
-nps();
-satisfaction();
 jedi();
 teacher();
-scoreExceed();
+satisfaction();
+
 
 // Contar a porcentagem de alunas ativas e inativas
 function totalAndInactives(){
@@ -54,9 +51,29 @@ function scoreExceed(){
         }
       }
     }
-    var mediaExceed = sprintsHitGoal / scoreTotal.length;
-    sprintGraph(scoreTotal, nameExceed, mediaExceed)
+    sprintGraph(scoreTotal, nameExceed, sprintsHitGoal)
   }
+
+// Calcular NPS por Sprint 
+function nps(){
+  var nameNPS = "NPS médio por sprint";
+  var sprintNPS = [];
+  var sprintPercent = [];
+
+  for (i in data[sede][turma]['ratings']){
+    var resultNPS = 0;
+    resultNPS = data[sede][turma]['ratings'][i]['nps']['promoters'] - data[sede][turma]['ratings'][i]['nps']['detractors'];
+    sprintPercent.push(resultNPS);
+    sprintNPS.push(resultNPS/100);
+  }
+
+  var mediaSprint = sprintPercent.reduce( function( acum, elem ) {
+    return acum + elem;
+});
+
+  var mediaNPS = (mediaSprint / 4) + "%";
+  sprintGraph(sprintNPS, nameNPS, mediaNPS);
+}
 
 // Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
 function scoreTech(){
@@ -104,19 +121,7 @@ function scoreHSE(){
     scoreGraph(scoreTotal, nameHSE);
   }
 
-// Calcular NPS por Sprint 
-function nps(){
-  var nameNPS = "NPS médio por sprint";
-  var sprintNPS = [];
-  for (i in data[sede][turma]['ratings']){
-    var resultNPS = 0;
-    resultNPS = data[sede][turma]['ratings'][i]['nps']['promoters'] - data[sede][turma]['ratings'][i]['nps']['detractors'];
-    sprintNPS.push(resultNPS/100);
-  }
-  sprintGraph(sprintNPS, nameNPS);
-}
-
-////Calcular nota teacher
+//Calcular nota teacher
 function teacher(){
   var nameTeacher = "Nota média Mentores"
   var scoreTeacher = 0;
@@ -148,21 +153,34 @@ function jedi(){
   legendGraph[1] = "";
   pieGraph(totalJedi, nameJedi, legendGraph);
 }
+
 //Calcular satisfação de Alunas
 function satisfaction(){
   var nameSatisfaction = "Alunas satisfeitas"
+  var percentStudent = [];
   var satisfactionStudent = [];
   for (i in data[sede][turma]['ratings']){
     var resultSatisfaction = 0;
     resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supera'];
+    percentStudent.push(resultSatisfaction)
     satisfactionStudent.push(resultSatisfaction/100);
   }
-  sprintGraph(satisfactionStudent, nameSatisfaction);
+
+  var mediaSprint = percentStudent.reduce( function( acum, elem ) {
+    return acum + elem;
+  });
+
+  var mediaSatisfaction = (mediaSprint / 4) + "%";
+  sprintGraph(satisfactionStudent, nameSatisfaction, mediaSatisfaction);
 }
 
 // Gráficos 
 function pieGraph(value, nameGraph, status) {
-  var newGraph = createHtml(nameGraph);
+  var divItem = document.createElement('div');
+  createHtml(nameGraph,divItem);
+  var newGraph = document.createElement('div');
+  divItem.appendChild(newGraph);
+
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(function(){
     drawChart(value, status);
@@ -188,12 +206,13 @@ function pieGraph(value, nameGraph, status) {
 }
 
 function scoreGraph(value, nameGraph) {
-  var mainContent = document.querySelector('main');
   var divItem = document.createElement('div');
-  var graphTitle = document.createElement('h2');
-  var newGraph = document.createElement('div');
+  createHtml(nameGraph,divItem);
   var infoGraph = document.createElement('div');
+  var newGraph = document.createElement('div');
   infoGraph.className = "info-graphic";
+  divItem.appendChild(infoGraph);
+  divItem.appendChild(newGraph);
 
   for(i in value[1]){
     var counter = parseInt(i);
@@ -201,16 +220,9 @@ function scoreGraph(value, nameGraph) {
     itemInfo.className = "info-sprint"
     itemInfo.innerHTML  = "<h3>" + value[1][i] + "</h3>"
     itemInfo.innerHTML += "<span> Students </span>"
-    itemInfo.innerHTML += "<span> Sprint" + (counter + 1) + "</span>"
+    itemInfo.innerHTML += "<span> Sprint " + (counter + 1) + "</span>"
     infoGraph.appendChild(itemInfo);
   }
-
-  graphTitle.textContent = nameGraph;
-  divItem.className = "item";
-  divItem.appendChild(graphTitle);
-  divItem.appendChild(infoGraph);
-  divItem.appendChild(newGraph);
-  mainContent.appendChild(divItem);
 
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
@@ -240,12 +252,18 @@ function scoreGraph(value, nameGraph) {
   }
 }
 
-function sprintGraph(value, nameGraph, media){
-  var newGraph = createHtml(nameGraph);
-  var itemInfo = document.createElement('span');
-  itemInfo.innerHTML  = "<h3>" + media + "</h3>"
-  itemInfo.innerHTML += "<span> Média </span>"
+function sprintGraph(value, nameGraph, valueTitle){
+  var divItem = document.createElement('div');
+  createHtml(nameGraph,divItem);
+  var infoGraph = document.createElement('div');
+  var newGraph = document.createElement('div');
   infoGraph.className = "info-graphic";
+  divItem.appendChild(infoGraph);
+  divItem.appendChild(newGraph);
+
+  var itemInfo = document.createElement('span');
+  itemInfo.innerHTML  = "<h3>" + valueTitle + "</h3>"
+  itemInfo.innerHTML += "<span> Média </span>"
   infoGraph.appendChild(itemInfo);
 
   google.charts.load('current', {'packages':['line']});
@@ -278,11 +296,11 @@ function sprintGraph(value, nameGraph, media){
   }
 }
 
-function createHtml(nameGraph){
+function createHtml(nameGraph, divItemLocal){
+  var graphTitle = document.createElement('h2');
   graphTitle.textContent = nameGraph;
-  divItem.className = "item";
-  divItem.appendChild(graphTitle);
-  divItem.appendChild(divGraph);
-  mainContent.appendChild(divItem);
-  return divGraph;
+  console.log(graphTitle);
+  divItemLocal.className = "item";
+  divItemLocal.appendChild(graphTitle);
+  mainContent.appendChild(divItemLocal);
 }
