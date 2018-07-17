@@ -1,5 +1,5 @@
 var sede = 'AQP';
-var turma = '2016-2';
+var turma = '2017-1';
 var mainContent = document.querySelector('main');
 
 totalAndInactives();
@@ -10,7 +10,6 @@ scoreHSE();
 jedi();
 teacher();
 satisfaction();
-
 
 // Contar a porcentagem de alunas ativas e inativas
 function totalAndInactives(){
@@ -51,6 +50,7 @@ function scoreExceed(){
         }
       }
     }
+    var mediaSprints = sprintsHitGoal / percentHitGoal.length;
     sprintGraph(scoreTotal, nameExceed, sprintsHitGoal)
   }
 
@@ -234,16 +234,17 @@ function scoreGraph(value, nameGraph) {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Sprints');
     data.addColumn('number', 'Students');
-    data.addRows([
-      ['Sprint 1',  valueGraph[0][0]],
-      ['Sprint 2',  valueGraph[0][1]],
-      ['Sprint 3',  valueGraph[0][2]],
-      ['Sprint 4',  valueGraph[0][3]]
-    ]);
+    var graphRows = [];
+    for (i = 0; i < valueGraph[0].length; i++) {
+      counter = parseInt(i);
+      graphRows[i] = ["" + (counter + 1) + "",  valueGraph[0][i]];
+    }
+    data.addRows(graphRows);
 
     var options = {
       width: 445,
       height: 500,
+      colors: ['#FF009E'],
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
         format: "percent"
@@ -277,17 +278,18 @@ function sprintGraph(value, nameGraph, valueTitle){
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Sprints');
     data.addColumn('number', 'NPS');
-    data.addRows([
-      ['Sprint 1',  valueGraph[0]],
-      ['Sprint 2',  valueGraph[1]],
-      ['Sprint 3',  valueGraph[2]],
-      ['Sprint 4',  valueGraph[3]]
-    ]);
+    var graphRows = [];
+    for (i = 0; i < valueGraph.length; i++) {
+      counter = parseInt(i);
+      graphRows[i] = ["" + (counter + 1) + "",  valueGraph[i]];
+    }
+    data.addRows(graphRows);
 
     var options = {
       curveType: 'function',
       width: 280,
       height: 290,
+      colors: ['#FF009E'],
       legend: { position: 'none' },
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
@@ -303,7 +305,6 @@ function sprintGraph(value, nameGraph, valueTitle){
 function createHtml(nameGraph, divItemLocal){
   var graphTitle = document.createElement('h2');
   graphTitle.textContent = nameGraph;
-  console.log(graphTitle);
   divItemLocal.className = "item";
   divItemLocal.appendChild(graphTitle);
   mainContent.appendChild(divItemLocal);
