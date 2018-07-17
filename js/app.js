@@ -3,7 +3,15 @@ dropSede.addEventListener('change', carregaTurmas);
 var dropTurma = document.getElementById('drop-turma');
 dropTurma.addEventListener('change', loadGraph);
 var mainContent = document.querySelector('main');
+timer();
 
+function timer()
+{
+        var d = new Date();
+        document.getElementById('date').innerHTML = d.toLocaleTimeString();
+       
+        setTimeout('timer()', 1000);
+}
 
 window.onload = carregaSedes();
 
@@ -25,7 +33,7 @@ function carregaTurmas(){
   nome.innerHTML = 'selecione turma';
   nome.value = 'none';
   dropTurma.appendChild(nome);
-  dropTurma.innerHTML='';
+    dropTurma.innerHTML='';
   for (eachTurma in data[dropSede.value]){
     console.log(eachTurma);
       var itemMenu = document.createElement('option');
