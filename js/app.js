@@ -1,15 +1,47 @@
-var sede = 'AQP';
-var turma = '2016-2';
+var dropSede = document.getElementById('drop-sede');
+dropSede.addEventListener('change', carregaTurmas);
+var dropTurma = document.getElementById('drop-turma');
+dropTurma.addEventListener('change', loadGraph);
 var mainContent = document.querySelector('main');
 
-totalAndInactives();
-scoreExceed();
-nps();
-scoreTech();
-scoreHSE();
-jedi();
-teacher();
-satisfaction();
+window.onload = carregaSedes();
+
+function carregaSedes(){ 
+    var nome = document.createElement('option');
+    nome.innerHTML = 'selecione sede';
+    nome.value = 'none';
+    dropSede.appendChild(nome);
+    for (eachSede in data){
+        var itemMenu = document.createElement('option');
+        itemMenu.value = eachSede;
+        itemMenu.innerHTML = eachSede;
+        dropSede.appendChild(itemMenu);
+    }
+};
+function carregaTurmas(){
+  var nome = document.createElement('option');
+  nome.innerHTML = 'selecione turma';
+  nome.value = 'none';
+  dropTurma.appendChild(nome);
+  for (eachTurma in data[dropSede.value]){
+    console.log(eachTurma);
+      var itemMenu = document.createElement('option');
+      itemMenu.value = eachTurma;
+      itemMenu.innerHTML = eachTurma;
+      dropTurma.appendChild(itemMenu);
+  }
+}
+
+function loadGraph(){
+  totalAndInactives();
+  scoreExceed();
+  nps();
+  scoreTech();
+  scoreHSE();
+  jedi();
+  teacher();
+  satisfaction();
+}    
 
 
 // Contar a porcentagem de alunas ativas e inativas
@@ -17,9 +49,9 @@ function totalAndInactives(){
   var nameTotal = "Alunas presentes e desistentes"
   var inactives = 0;
   var actives = 0;
-	var totalStudents = data[sede][turma]['students'].length;
-	for (i in data[sede][turma]['students']){
-		if (data[sede][turma]['students'][i]['active'] === false){
+	var totalStudents = data[dropSede.value][dropTurma.value]['students'].length;
+	for (i in data[dropSede.value][dropTurma.value]['students']){
+		if (data[dropSede.value][dropTurma.value]['students'][i]['active'] === false){
 			inactives += 1;
 		}
   }
@@ -34,12 +66,12 @@ function totalAndInactives(){
 // Comparação excedem
 function scoreExceed(){
   var nameExceed = "Alunas que excederam a pontuação Tech e HSE"
-  totalStudents = data[sede][turma]['students'].length
+  totalStudents = data[dropSede.value][dropTurma.value]['students'].length
     var sprintsHitGoal = [];
     var percentHitGoal = [];
-    for (i in data[sede][turma]['students']){
-      for (j in data[sede][turma]['students'][i]['sprints']){
-        if (data[sede][turma]['students'][i]['sprints'][j]['score']['hse'] >= 840 && data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
+    for (i in data[dropSede.value][dropTurma.value]['students']){
+      for (j in data[dropSede.value][dropTurma.value]['students'][i]['sprints']){
+        if (data[dropSede.value][dropTurma.value]['students'][i]['sprints'][j]['score']['hse'] >= 840 && data[dropSede.value][dropTurma.value]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
           if (percentHitGoal[j] >= 0) {
             percentHitGoal[j] += (1 / totalStudents);
             sprintsHitGoal += 1;
@@ -60,9 +92,9 @@ function nps(){
   var sprintNPS = [];
   var sprintPercent = [];
 
-  for (i in data[sede][turma]['ratings']){
+  for (i in data[dropSede.value][dropTurma.value]['ratings']){
     var resultNPS = 0;
-    resultNPS = data[sede][turma]['ratings'][i]['nps']['promoters'] - data[sede][turma]['ratings'][i]['nps']['detractors'];
+    resultNPS = data[dropSede.value][dropTurma.value]['ratings'][i]['nps']['promoters'] - data[dropSede.value][dropTurma.value]['ratings'][i]['nps']['detractors'];
     sprintPercent.push(resultNPS);
     sprintNPS.push(resultNPS/100);
   }
@@ -78,12 +110,12 @@ function nps(){
 // Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
 function scoreTech(){
   var nameTech = "Alunas que excederam a pontuação Tech"
-  totalStudents = data[sede][turma]['students'].length
+  totalStudents = data[dropSede.value][dropTurma.value]['students'].length
     var sprintsHitGoal = [];
     var percentHitGoal = [];
-    for (i in data[sede][turma]['students']){
-      for (j in data[sede][turma]['students'][i]['sprints']){
-        if (data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
+    for (i in data[dropSede.value][dropTurma.value]['students']){
+      for (j in data[dropSede.value][dropTurma.value]['students'][i]['sprints']){
+        if (data[dropSede.value][dropTurma.value]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
           if (sprintsHitGoal[j] >= 0) {
             sprintsHitGoal[j] += 1;
             percentHitGoal[j] += (1 / totalStudents);
@@ -101,12 +133,12 @@ function scoreTech(){
 // Contar a porcentagem de alunas que excederam a pontuação HSE por sprint
 function scoreHSE(){
   var nameHSE = "Alunas que excederam a pontuação HSE";
-  totalStudents = data[sede][turma]['students'].length
+  totalStudents = data[dropSede.value][dropTurma.value]['students'].length
     var sprintsHitGoal = [];
     var percentHitGoal = [];
-    for (i in data[sede][turma]['students']){
-      for (j in data[sede][turma]['students'][i]['sprints']){
-        if (data[sede][turma]['students'][i]['sprints'][j]['score']['hse'] >= 840){ 
+    for (i in data[dropSede.value][dropTurma.value]['students']){
+      for (j in data[dropSede.value][dropTurma.value]['students'][i]['sprints']){
+        if (data[dropSede.value][dropTurma.value]['students'][i]['sprints'][j]['score']['hse'] >= 840){ 
           if (sprintsHitGoal[j] >= 0) {
             sprintsHitGoal[j] += 1;
             percentHitGoal[j] += (1 / totalStudents);
@@ -126,9 +158,9 @@ function teacher(){
   var nameTeacher = "Nota média Mentores"
   var scoreTeacher = 0;
   var resultTeacher =  0;
-  for (i in data[sede][turma]['ratings']){
-    resultTeacher += data[sede][turma]['ratings'][i]['teacher'];
-    scoreTeacher = resultTeacher / data[sede][turma]['ratings'].length;
+  for (i in data[dropSede.value][dropTurma.value]['ratings']){
+    resultTeacher += data[dropSede.value][dropTurma.value]['ratings'][i]['teacher'];
+    scoreTeacher = resultTeacher / data[dropSede.value][dropTurma.value]['ratings'].length;
   }
   totalTeacher = [scoreTeacher, 5 - scoreTeacher];
   var legendGraph = [];
@@ -143,9 +175,9 @@ function jedi(){
   var scoreJedi = 0;
   var resultJedi = 0;
 
-  for (i in data[sede][turma]['ratings']){
-    resultJedi += data[sede][turma]['ratings'][i]['jedi'];
-    scoreJedi = resultJedi / data[sede][turma]['ratings'].length;
+  for (i in data[dropSede.value][dropTurma.value]['ratings']){
+    resultJedi += data[dropSede.value][dropTurma.value]['ratings'][i]['jedi'];
+    scoreJedi = resultJedi / data[dropSede.value][dropTurma.value]['ratings'].length;
   }
   totalJedi = [scoreJedi, 5 - scoreJedi];
   var legendGraph = [];
@@ -159,9 +191,9 @@ function satisfaction(){
   var nameSatisfaction = "Alunas satisfeitas"
   var percentStudent = [];
   var satisfactionStudent = [];
-  for (i in data[sede][turma]['ratings']){
+  for (i in data[dropSede.value][dropTurma.value]['ratings']){
     var resultSatisfaction = 0;
-    resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supera'];
+    resultSatisfaction = data[dropSede.value][dropTurma.value]['ratings'][i]['student']['cumple'] + data[dropSede.value][dropTurma.value]['ratings'][i]['student']['supera'];
     percentStudent.push(resultSatisfaction)
     satisfactionStudent.push(resultSatisfaction/100);
   }
