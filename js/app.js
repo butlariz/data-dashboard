@@ -133,7 +133,7 @@ function teacher(){
   totalTeacher = [scoreTeacher, 5 - scoreTeacher];
   var legendGraph = [];
   legendGraph[0] = "Média";
-  legendGraph[1] = "";
+  legendGraph[1] = "Restante";
   pieGraph(totalTeacher, nameTeacher, legendGraph);
 }
 
@@ -150,7 +150,7 @@ function jedi(){
   totalJedi = [scoreJedi, 5 - scoreJedi];
   var legendGraph = [];
   legendGraph[0] = "Media";
-  legendGraph[1] = "";
+  legendGraph[1] = "Restante";
   pieGraph(totalJedi, nameJedi, legendGraph);
 }
 
@@ -193,11 +193,13 @@ function pieGraph(value, nameGraph, status) {
       [statusGraph[0], valueGraph[0]],
       [statusGraph[1], valueGraph[1]]
     ]);
-    var options = { 'width':400,
-                    'height':300,
+    var options = { 'width':330,
+                    'height':350,
+                    colors:['#f7b617','#feffa6'],
                     pieSliceTextStyle: {
                       color: 'black',
                     },
+                    chartArea:{width: '90%'},
                     pieHole: 0.6,};
 
     var chart = new google.visualization.PieChart(newGraph);
@@ -240,12 +242,13 @@ function scoreGraph(value, nameGraph) {
     ]);
 
     var options = {
-      width: 600,
+      width: 445,
       height: 500,
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
         format: "percent"
-      }
+      },
+      legend: { position: 'none' }
     }
     var chart = new google.charts.Line(newGraph);
     chart.draw(data, google.charts.Line.convertOptions(options));
@@ -283,8 +286,9 @@ function sprintGraph(value, nameGraph, valueTitle){
 
     var options = {
       curveType: 'function',
-      width: 500,
-      height: 300,
+      width: 280,
+      height: 290,
+      legend: { position: 'none' },
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
         format: "percent"
