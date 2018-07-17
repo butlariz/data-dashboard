@@ -4,6 +4,7 @@ var dropTurma = document.getElementById('drop-turma');
 dropTurma.addEventListener('change', loadGraph);
 var mainContent = document.querySelector('main');
 
+
 window.onload = carregaSedes();
 
 function carregaSedes(){ 
@@ -16,6 +17,7 @@ function carregaSedes(){
         itemMenu.value = eachSede;
         itemMenu.innerHTML = eachSede;
         dropSede.appendChild(itemMenu);
+
     }
 };
 function carregaTurmas(){
@@ -23,16 +25,19 @@ function carregaTurmas(){
   nome.innerHTML = 'selecione turma';
   nome.value = 'none';
   dropTurma.appendChild(nome);
+  dropTurma.innerHTML='';
   for (eachTurma in data[dropSede.value]){
     console.log(eachTurma);
       var itemMenu = document.createElement('option');
       itemMenu.value = eachTurma;
       itemMenu.innerHTML = eachTurma;
       dropTurma.appendChild(itemMenu);
+
   }
 }
 
 function loadGraph(){
+  mainContent.innerHTML='';
   totalAndInactives();
   scoreExceed();
   nps();
@@ -41,6 +46,7 @@ function loadGraph(){
   jedi();
   teacher();
   satisfaction();
+  
 }    
 
 
