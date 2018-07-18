@@ -113,11 +113,19 @@ nav ul {
 nav ul li {
     margin: 10px 0;
     padding: 0px 0;
+    height: 20px;
+    overflow: hidden;
+    transition-duration: .4s;
 }
 
 nav ul li a { 
     color: #000;
 }
+
+nav ul li.comparar:hover {
+    height: 170px;
+}
+
 main {
     width: 91%;
     display: flex;
@@ -146,9 +154,18 @@ main {
     justify-content: space-between;
 }
 
+.info-graphic:nth-child(2) h3 {
+    color: #ff08a1;
+}
+
+.info-graphic:nth-child(3) h3 {
+    color: #56f89a;
+}
+
 .info-sprint {
     display: flex;
     flex-direction: column;
+    margin-right: 30px;
 }
 
 .info-sprint span {
