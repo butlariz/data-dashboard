@@ -155,6 +155,7 @@ function scoreExceed(sede,turma){
   resultData.Exceed.name = nameExceed;
   resultData.Exceed.number = numberTotal;
   resultData.Exceed.percent = percentTotal;
+  resultData.Exceed.subtitle = "Students";
 
   sprintGraph(resultData.Exceed);
   }
@@ -186,6 +187,7 @@ function nps(sede,turma){
   resultData.NPS.name = nameNPS;
   resultData.NPS.number = numberTotal;
   resultData.NPS.percent = percentTotal;
+  resultData.NPS.subtitle = "NPS";
 
   sprintGraph(resultData.NPS);
 }
@@ -318,6 +320,7 @@ function satisfaction(sede,turma){
   resultData.Satisfaction.name = nameSatisfaction;
   resultData.Satisfaction.number = numberTotal;
   resultData.Satisfaction.percent = percentTotal;
+  resultData.Satisfaction.subtitle = "Students";
 
   sprintGraph(resultData.Satisfaction);
 }
@@ -358,14 +361,10 @@ function pieGraph(value, nameGraph, status) {
 function scoreGraph(keyData) {
   var divItem = document.createElement('div');
   createHtml(keyData.name,divItem);
-  var infoGraph = document.createElement('div');
   var newGraph = document.createElement('div');
-  infoGraph.className = "info-graphic";
-  divItem.classList.add("item","score-graphic");
-  divItem.appendChild(infoGraph);
-  divItem.appendChild(newGraph);
 
   for (i in keyData.number) {
+    var infoGraph = document.createElement('div');
     for(j in keyData.number[i]){
       var counter = parseInt(j);
       var itemInfo = document.createElement('span');
@@ -374,9 +373,13 @@ function scoreGraph(keyData) {
       itemInfo.innerHTML += "<span> Students </span>"
       itemInfo.innerHTML += "<span> Sprint " + (counter + 1) + "</span>"
       infoGraph.appendChild(itemInfo);
+      infoGraph.className = "info-graphic";
+      divItem.classList.add("item","score-graphic");
+      divItem.appendChild(infoGraph);
     }
   }
 
+  divItem.appendChild(newGraph);
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
     drawChart(keyData);
@@ -418,18 +421,21 @@ function scoreGraph(keyData) {
 function sprintGraph(keyData){
   var divItem = document.createElement('div');
   createHtml(keyData.name,divItem);
-  var infoGraph = document.createElement('div');
   var newGraph = document.createElement('div');
-  infoGraph.className = "info-graphic";
-  divItem.appendChild(infoGraph);
-  divItem.appendChild(newGraph);
-
   for(i in keyData.number){
+    var infoGraph = document.createElement('div');
     var itemInfo = document.createElement('span');
-    itemInfo.innerHTML  = "<h3>" + keyData.number[0] + "</h3>"
-    itemInfo.innerHTML += "<span> Média </span>"
+    itemInfo.innerHTML  = "<h3>" +  keyData.number[i] + "</h3>"
+    if (keyData.subtitle === "NPS") {
+      itemInfo.innerHTML += "<span> Média </span>"
+    } else {
+     itemInfo.innerHTML += "<span>" + keyData.subtitle + "</span>"
+    }
     infoGraph.appendChild(itemInfo);
+    infoGraph.className = "info-graphic";
+    divItem.appendChild(infoGraph);
   }
+  divItem.appendChild(newGraph);
 
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
@@ -438,9 +444,9 @@ function sprintGraph(keyData){
   function drawChart(keyValue) {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Sprints');
-    data.addColumn('number', 'NPS');
+    data.addColumn('number', keyValue.subtitle);
     if (keyValue.percent.length > 1) {
-      data.addColumn('number', 'NPS 2');
+      data.addColumn('number', keyValue.subtitle);
     }
     var graphRows = [];
     for (i = 0; i < keyValue.percent[0].length; i++) {
@@ -458,52 +464,6 @@ function sprintGraph(keyData){
       width: 280,
       height: 290,
       colors: ['#FF009E','#8ee2b4'],
-      legend: { position: 'none' },
-      vAxis: {
-        viewWindow: { min: 0, max: 1 },	
-        format: "percent"
-      }
-    };
-
-    var chart = new google.charts.Line(newGraph);
-    chart.draw(data, google.charts.Line.convertOptions(options));
-  }
-}
-
-function sprintGraphOfc(value, nameGraph, valueTitle){
-  var divItem = document.createElement('div');
-  createHtml(nameGraph,divItem);
-  var infoGraph = document.createElement('div');
-  var newGraph = document.createElement('div');
-  infoGraph.className = "info-graphic";
-  divItem.appendChild(infoGraph);
-  divItem.appendChild(newGraph);
-
-  var itemInfo = document.createElement('span');
-  itemInfo.innerHTML  = "<h3>" + valueTitle + "</h3>"
-  itemInfo.innerHTML += "<span> Média </span>"
-  infoGraph.appendChild(itemInfo);
-
-  google.charts.load('current', {'packages':['line']});
-  google.charts.setOnLoadCallback(function(){
-    drawChart(value);
-  });
-  function drawChart(valueGraph) {
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Sprints');
-    data.addColumn('number', 'NPS');
-    var graphRows = [];
-    for (i = 0; i < valueGraph.length; i++) {
-      counter = parseInt(i);
-      graphRows[i] = ["" + (counter + 1) + "",  valueGraph[i]];
-    }
-    data.addRows(graphRows);
-
-    var options = {
-      curveType: 'function',
-      width: 280,
-      height: 290,
-      colors: ['#FF009E'],
       legend: { position: 'none' },
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
