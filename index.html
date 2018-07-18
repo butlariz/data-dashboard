@@ -16,12 +16,12 @@
         <nav>
           <ul>
             <li><a href="/"> Visão Geral </a></li>
-            <li class="comparar"><a href="#"> Comparar </a>
+            <li class="compare"><a href="#"> Comparar </a>
             <br />
-            <select class="dropSede" id='comparar-sede1' onchange="carregaTurmas('comparar-sede1','comparar-turma1')"></select>
-            <select class="dropTurma" id='comparar-turma1'></select>
-            <select class="dropSede"  id='comparar-sede2'  onchange="carregaTurmas('comparar-sede2','comparar-turma2')"></select>
-            <select class="dropTurma"  id='comparar-turma2'></select>
+            <select class="dropRegion" id='compare-region1' onchange="loadClass('compare-region1','compare-class1')"></select>
+            <select class="dropClass" id='compare-class1'></select>
+            <select class="dropRegion"  id='compare-region2'  onchange="loadClass('compare-region2','compare-class2')"></select>
+            <select class="dropClass"  id='compare-class2'></select>
             </li>
             <li><a href="#" id='show-alunas'> Alunas </a></li>
             <li><a href="#"> Lembretes </a></li>
@@ -32,8 +32,8 @@
         <div class="top-bar">
             <span class="logo"> <img src="assets/images/logo-laboratoria.svg" alt="Logo Laboratória" /></span> 
             <span class="sede">Bem vinda! Vendo dados sobre: 
-              <select id='drop-sede'  class="dropSede" onchange="carregaTurmas('drop-sede','drop-turma')"></select>
-              <select id='drop-turma'  class="dropTurma" ></select>
+              <select id='drop-region'  class="dropRegion" onchange="loadClass('drop-region','drop-class')"></select>
+              <select id='drop-class'  class="dropClass" ></select>
             </span>
             <span id="date"></span>
         </div>
