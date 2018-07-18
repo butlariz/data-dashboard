@@ -1,15 +1,90 @@
-var sede = 'AQP';
-var turma = '2016-2';
-totalAndInactives();
-scoreTech();
-scoreHSE();
-nps();
-satisfaction();
-jedi();
-teacher();
+var dropSede = document.getElementById('drop-sede');
+var dropTurma = document.getElementById('drop-turma');
+dropTurma.addEventListener('change', loadGraph);
+var dropSede1 = document.getElementById('comparar-sede1');
+var dropTurma1 = document.getElementById('comparar-turma1');
+var dropSede2 = document.getElementById('comparar-sede2');
+var dropTurma2 = document.getElementById('comparar-turma2');
+dropTurma2.addEventListener('change', loadCompara);
+var mainContent = document.querySelector('main');
+
+resultData = {};
+// timer();
+
+function timer() {
+  var d = new Date();
+  document.getElementById('date').innerHTML = d.toLocaleTimeString();
+  setTimeout('timer()', 1000);
+}
+
+window.onload = carregaSedes();
+
+function carregaSedes(){ 
+  var compararSede = document.getElementsByClassName("dropSede");
+  var nome = "";
+  for (i in compararSede){
+  nome = document.createElement('option');
+  nome.innerHTML = 'selecione sede';
+  nome.value = 'none';
+  compararSede[i].appendChild(nome);
+    for (eachSede in data){
+        var itemMenu = document.createElement('option');
+        itemMenu.value = eachSede;
+        itemMenu.innerHTML = eachSede;
+        compararSede[i].appendChild(itemMenu);
+    }
+  }
+}
+
+function carregaTurmas(divSede,divTurma){
+  var compararTurma = document.getElementById(divSede).value;
+  var menuTurma = document.getElementById(divTurma);
+  var nome = document.createElement('option');
+  menuTurma.innerHTML='';
+  nome.innerHTML = 'selecione turma';
+  nome.value = 'none';
+  menuTurma.appendChild(nome);
+  for (eachTurma in data[compararTurma]){
+      var itemMenu = document.createElement('option');
+      itemMenu.value = eachTurma;
+      itemMenu.innerHTML = eachTurma;
+      menuTurma.appendChild(itemMenu);
+  }
+}
+
+function loadGraph(){
+  var newSede = [];
+  var newTurma = [];
+  newSede[0] = dropSede.value;
+  newTurma[0] = dropTurma.value;
+  mainContent.innerHTML='';
+  totalAndInactives(newSede,newTurma)
+  scoreExceed(newSede,newTurma);
+  nps(newSede,newTurma);
+  scoreTech(newSede,newTurma);
+  scoreHSE(newSede,newTurma);
+  teacher(newSede,newTurma)
+  jedi(newSede,newTurma)
+  satisfaction(newSede,newTurma);
+}   
+
+function loadCompara(){
+  var newSede = [];
+  var newTurma = [];
+  newSede[0] = dropSede1.value;
+  newTurma[0] = dropTurma1.value;
+  newSede[1] = dropSede2.value;
+  newTurma[1] = dropTurma2.value;
+  mainContent.innerHTML='';
+  scoreExceed(newSede,newTurma);
+  nps(newSede,newTurma);
+  satisfaction(newSede,newTurma);
+  scoreTech(newSede,newTurma);
+  scoreHSE(newSede,newTurma);
+}  
 
 // Contar a porcentagem de alunas ativas e inativas
-function totalAndInactives(){
+function totalAndInactives(sede,turma){
   var nameTotal = "Alunas presentes e desistentes"
   var inactives = 0;
   var actives = 0;
@@ -21,78 +96,167 @@ function totalAndInactives(){
   }
   actives = totalStudents - inactives; 
   var total = [actives,inactives]
-  pieGraph(total, nameTotal);
+  var legendGraph = [];
+  legendGraph[0] = "Ativas";
+  legendGraph[1] = "Inativas";
+  pieGraph(total, nameTotal, legendGraph);
 }
 
-// Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
-function scoreTech(){
-  var nameTech = "Alunas que excederam a pontuação Tech"
-  totalStudents = data[sede][turma]['students'].length
-    var sprintsHitGoal = [];
-    var percentHitGoal = [];
-    for (i in data[sede][turma]['students']){
-      for (j in data[sede][turma]['students'][i]['sprints']){
-        if (data[sede][turma]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
-          if (sprintsHitGoal[j] >= 0) {
-            sprintsHitGoal[j] += 1;
-            percentHitGoal[j] += (1 / totalStudents);
-          } else if (!sprintsHitGoal[j]){
-            sprintsHitGoal[j] = 1;
-            percentHitGoal[j] = (1 / totalStudents);
-            var scoreTotal = [percentHitGoal, sprintsHitGoal]
-          }
-        }
-      }
-    }
-  scoreGraph(scoreTotal, nameTech);
-}
+// Comparação excedem
+function scoreExceed(sede,turma){
+  var nameExceed = "Alunas que excederam a pontuação Tech e HSE"
+  var numberTotal = [];
+  var percentTotal = [];
 
-// Contar a porcentagem de alunas que excederam a pontuação HSE por sprint
-function scoreHSE(){
-  var nameHSE = "Alunas que excederem a pontuação HSE";
-  totalStudents = data[sede][turma]['students'].length
-    var sprintsHitGoal = [];
+  for (v in sede) {
+  totalStudents = data[sede[v]][turma[v]]['students'].length
+    var numberHitGoal = [];
     var percentHitGoal = [];
-    for (i in data[sede][turma]['students']){
-      for (j in data[sede][turma]['students'][i]['sprints']){
-        if (data[sede][turma]['students'][i]['sprints'][j]['score']['hse'] >= 840){ 
-          if (sprintsHitGoal[j] >= 0) {
-            sprintsHitGoal[j] += 1;
+
+    for (i in data[sede[v]][turma[v]]['students']){
+      for (j in data[sede[v]][turma[v]]['students'][i]['sprints']){
+        if (data[sede[v]][turma[v]]['students'][i]['sprints'][j]['score']['hse'] >= 840 && data[sede[v]][turma[v]]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
+          if (percentHitGoal[j] >= 0) {
             percentHitGoal[j] += (1 / totalStudents);
-          } else if (!sprintsHitGoal[j]){
-            sprintsHitGoal[j] = 1;
+            numberHitGoal += 1;
+          } else if (!percentHitGoal[j]){
             percentHitGoal[j] = (1 / totalStudents);
-            var scoreTotal = [percentHitGoal, sprintsHitGoal]
+            numberHitGoal = 1;
+            var scoreTotal = percentHitGoal
            }
         }
       }
     }
-    scoreGraph(scoreTotal, nameHSE);
+    var mediaSprints = numberHitGoal / percentHitGoal.length;
+    numberTotal.push(mediaSprints);
+    percentTotal.push(percentHitGoal);
+  }
+
+  resultData.Exceed = {};
+  resultData.Exceed.name = nameExceed;
+  resultData.Exceed.number = numberTotal;
+  resultData.Exceed.percent = percentTotal;
+
+  sprintGraph(resultData.Exceed);
   }
 
 // Calcular NPS por Sprint 
-function nps(){
-  var sprintNPS = [];
-  for (i in data[sede][turma]['ratings']){
-    var resultNPS = 0;
-    resultNPS = data[sede][turma]['ratings'][i]['nps']['promoters'] - data[sede][turma]['ratings'][i]['nps']['detractors'];
-    sprintNPS.push(resultNPS/100);
+function nps(sede,turma){
+  var nameNPS = "NPS médio por sprint";
+  var numberTotal = [];
+  var percentTotal = [];
+
+  for (v in sede) {
+  var numberNPS = [];
+  var percentNPS = [];
+    for (i in data[sede[v]][turma[v]]['ratings']){
+      var resultNPS = 0;
+      resultNPS = data[sede[v]][turma[v]]['ratings'][i]['nps']['promoters'] - data[sede[v]][turma[v]]['ratings'][i]['nps']['detractors'];
+      numberNPS.push(resultNPS);
+      percentNPS.push(resultNPS/100);
+    }
+    var mediaSprint = numberNPS.reduce( function( acum, elem ) {
+      return acum + elem;
+    });
+    var mediaNPS = (mediaSprint / 4) + "%";
+    numberTotal.push(mediaNPS);
+    percentTotal.push(percentNPS);
   }
-  npsGraph(sprintNPS);
+
+  resultData.NPS = {};
+  resultData.NPS.name = nameNPS;
+  resultData.NPS.number = numberTotal;
+  resultData.NPS.percent = percentTotal;
+
+  sprintGraph(resultData.NPS);
 }
-////Calcular nota teacher
-function teacher(){
+
+// Contar a porcentagem de alunas que excederam a pontuação tecnica por sprint
+function scoreTech(sede,turma){
+  var nameTech = "Alunas que excederam a pontuação Tech";
+  var numberTotal = [];
+  var percentTotal = [];
+    for (v in sede) {
+      var totalStudents = data[sede[v]][turma[v]]['students'].length;
+      var numberHitGoal = [];
+      var percentHitGoal = [];
+      for (i in data[sede[v]][turma[v]]['students']){
+        for (j in data[sede[v]][turma[v]]['students'][i]['sprints']){
+          if (data[sede[v]][turma[v]]['students'][i]['sprints'][j]['score']['tech'] >= 1260){ 
+            if (numberHitGoal[j] >= 0) {
+              numberHitGoal[j] += 1;
+              percentHitGoal[j] += (1 / totalStudents);
+            } else if (!numberHitGoal[j]){
+              numberHitGoal[j] = 1;
+              percentHitGoal[j] = (1 / totalStudents);
+            }
+          }
+        }
+      }
+    numberTotal.push(numberHitGoal);
+    percentTotal.push(percentHitGoal);
+    }
+  
+    resultData.notaTech = {};
+    resultData.notaTech.name = nameTech;
+    resultData.notaTech.number = numberTotal;
+    resultData.notaTech.percent = percentTotal;
+  
+    scoreGraph(resultData.notaTech);
+  }
+
+// Contar a porcentagem de alunas que excederam a pontuação HSE por sprint
+function scoreHSE(sede,turma){
+  var nameHSE = "Alunas que excederam a pontuação HSE";
+  var numberTotal = [];
+  var percentTotal = [];
+    for (v in sede) {
+      var totalStudents = data[sede[v]][turma[v]]['students'].length;
+      var numberHitGoal = [];
+      var percentHitGoal = [];
+      for (i in data[sede[v]][turma[v]]['students']){
+        for (j in data[sede[v]][turma[v]]['students'][i]['sprints']){
+          if (data[sede[v]][turma[v]]['students'][i]['sprints'][j]['score']['hse'] >= 840){ 
+            if (numberHitGoal[j] >= 0) {
+              numberHitGoal[j] += 1;
+              percentHitGoal[j] += (1 / totalStudents);
+            } else if (!numberHitGoal[j]){
+              numberHitGoal[j] = 1;
+              percentHitGoal[j] = (1 / totalStudents);
+            }
+          }
+        }
+      }
+    numberTotal.push(numberHitGoal);
+    percentTotal.push(percentHitGoal);
+    }
+  
+    resultData.notaHSE = {};
+    resultData.notaHSE.name = nameHSE;
+    resultData.notaHSE.number = numberTotal;
+    resultData.notaHSE.percent = percentTotal;
+    scoreGraph(resultData.notaHSE);
+  }
+
+//Calcular nota teacher
+function teacher(sede,turma){
+  var nameTeacher = "Nota média Mentores"
   var scoreTeacher = 0;
   var resultTeacher =  0;
   for (i in data[sede][turma]['ratings']){
     resultTeacher += data[sede][turma]['ratings'][i]['teacher'];
     scoreTeacher = resultTeacher / data[sede][turma]['ratings'].length;
-    
-  };
+  }
+  totalTeacher = [scoreTeacher, 5 - scoreTeacher];
+  var legendGraph = [];
+  legendGraph[0] = "Média";
+  legendGraph[1] = "Restante";
+  pieGraph(totalTeacher, nameTeacher, legendGraph);
 }
 
 //Calcular nota Jedi
-function jedi(){
+function jedi(sede,turma){
+  var nameJedi = "Nota média Jedi"
   var scoreJedi = 0;
   var resultJedi = 0;
 
@@ -100,46 +264,74 @@ function jedi(){
     resultJedi += data[sede][turma]['ratings'][i]['jedi'];
     scoreJedi = resultJedi / data[sede][turma]['ratings'].length;
   }
+  totalJedi = [scoreJedi, 5 - scoreJedi];
+  var legendGraph = [];
+  legendGraph[0] = "Media";
+  legendGraph[1] = "Restante";
+  pieGraph(totalJedi, nameJedi, legendGraph);
 }
+
 //Calcular satisfação de Alunas
-function satisfaction(){
-  var satisfactionStudent = [];
-  for (i in data[sede][turma]['ratings']){
-    var resultSatisfaction = 0;
-    resultSatisfaction = data[sede][turma]['ratings'][i]['student']['cumple'] + data[sede][turma]['ratings'][i]['student']['supera'];
-    satisfactionStudent.push(resultSatisfaction/100);
+function satisfaction(sede,turma){
+  var nameSatisfaction = "Alunas satisfeitas";
+  var numberTotal = [];
+  var percentTotal = [];
+    
+  for(v in sede){
+    var percentStudent = [];
+    var numberStudent = [];
+    for (i in data[sede[v]][turma[v]]['ratings']){
+      var resultSatisfaction = 0;
+      resultSatisfaction =  data[sede[v]][turma[v]]['ratings'][i]['student']['cumple'] +  data[sede[v]][turma[v]]['ratings'][i]['student']['supera'];
+      numberStudent.push(resultSatisfaction)
+      percentStudent.push(resultSatisfaction/100);
+    }
+
+    var mediaSprint = numberStudent.reduce( function( acum, elem ) {
+      return acum + elem;
+    });
+    var mediaSatisfaction = (mediaSprint / percentStudent.length) + "%";
+
+    numberTotal.push(mediaSatisfaction);
+    percentTotal.push(percentStudent);
   }
+
+  console.log(numberTotal)
+  console.log(percentTotal)
+  resultData.Satisfaction = {};
+  resultData.Satisfaction.name = nameSatisfaction;
+  resultData.Satisfaction.number = numberTotal;
+  resultData.Satisfaction.percent = percentTotal;
+
+  sprintGraph(resultData.Satisfaction);
 }
 
 // Gráficos 
-function pieGraph(value, nameGraph) {
+function pieGraph(value, nameGraph, status) {
   var divItem = document.createElement('div');
+  createHtml(nameGraph,divItem);
   var newGraph = document.createElement('div');
-  var mainContent = document.querySelector('main');
-  var graphTitle = document.createElement('h3');
-  graphTitle.textContent = nameGraph;
-  divItem.className = "item";
-  divItem.appendChild(graphTitle);
   divItem.appendChild(newGraph);
-  mainContent.appendChild(divItem);
 
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(function(){
-    drawChart(value);
+    drawChart(value, status);
   });
-  function drawChart(valueGraph) {
+  function drawChart(valueGraph, statusGraph) {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Status');
     data.addColumn('number', 'Porcentagem');
     data.addRows([
-      ['Ativas', valueGraph[0]],
-      ['Inativas', valueGraph[1]]
+      [statusGraph[0], valueGraph[0]],
+      [statusGraph[1], valueGraph[1]]
     ]);
-    var options = { 'width':400,
-                    'height':300,
+    var options = { 'width':330,
+                    'height':350,
+                    colors:['#f7b617','#feffa6'],
                     pieSliceTextStyle: {
                       color: 'black',
                     },
+                    chartArea:{width: '90%'},
                     pieHole: 0.6,};
 
     var chart = new google.visualization.PieChart(newGraph);
@@ -147,46 +339,135 @@ function pieGraph(value, nameGraph) {
   }
 }
 
-function scoreGraph(value, nameGraph) {
+function scoreGraph(keyData) {
   var divItem = document.createElement('div');
+  createHtml(keyData.name,divItem);
+  var infoGraph = document.createElement('div');
   var newGraph = document.createElement('div');
-  var mainContent = document.querySelector('main');
-  var graphTitle = document.createElement('h3');
-  graphTitle.textContent = nameGraph;
-  divItem.className = "item";
-  divItem.appendChild(graphTitle);
+  infoGraph.className = "info-graphic";
+  divItem.classList.add("item","score-graphic");
+  divItem.appendChild(infoGraph);
   divItem.appendChild(newGraph);
-  mainContent.appendChild(divItem);
+
+  for (i in keyData.number) {
+    for(j in keyData.number[i]){
+      var counter = parseInt(j);
+      var itemInfo = document.createElement('span');
+      itemInfo.className = "info-sprint"
+      itemInfo.innerHTML  = "<h3>" + keyData.number[i][j] + "</h3>"
+      itemInfo.innerHTML += "<span> Students </span>"
+      itemInfo.innerHTML += "<span> Sprint " + (counter + 1) + "</span>"
+      infoGraph.appendChild(itemInfo);
+    }
+  }
 
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
-    drawChart(value);
+    drawChart(keyData);
   });
-  function drawChart(valueGraph) {
+  function drawChart(keyValue) {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Sprints');
-    data.addColumn('number', 'Students');
-    data.addRows([
-      ['Sprint 1',  valueGraph[0][0]],
-      ['Sprint 2',  valueGraph[0][1]],
-      ['Sprint 3',  valueGraph[0][2]],
-      ['Sprint 4',  valueGraph[0][3]]
-    ]);
+    data.addColumn('number', 'Students 1');
+    if (keyValue.percent.length > 1) {
+     data.addColumn('number', 'Students 2');
+    }
+    var graphRows = [];
+    for (i = 0; i < keyValue.percent[0].length; i++) {
+      counter = parseInt(i);
+      if (keyValue.percent.length === 1) {
+        graphRows[i] = ["" + (counter + 1) + "",  keyValue.percent[0][i]];
+      } else if (keyValue.percent.length > 1) {
+       graphRows[i] = ["" + (counter + 1) + "",  keyValue.percent[0][i], keyValue.percent[1][i]];
+      }
+    }
+    data.addRows(graphRows);
 
     var options = {
-      width: 600,
+      width: 445,
       height: 500,
+      colors: ['#FF009E', '#8ee2b4'],
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
         format: "percent"
-      }
+      },
+      legend: { position: 'none' }
     }
     var chart = new google.charts.Line(newGraph);
     chart.draw(data, google.charts.Line.convertOptions(options));
   }
 }
 
-function npsGraph(value){
+//name number percent
+function sprintGraph(keyData){
+  var divItem = document.createElement('div');
+  createHtml(keyData.name,divItem);
+  var infoGraph = document.createElement('div');
+  var newGraph = document.createElement('div');
+  infoGraph.className = "info-graphic";
+  divItem.appendChild(infoGraph);
+  divItem.appendChild(newGraph);
+
+  for(i in keyData.number){
+    var itemInfo = document.createElement('span');
+    itemInfo.innerHTML  = "<h3>" + keyData.number[0] + "</h3>"
+    itemInfo.innerHTML += "<span> Média </span>"
+    infoGraph.appendChild(itemInfo);
+  }
+
+  google.charts.load('current', {'packages':['line']});
+  google.charts.setOnLoadCallback(function(){
+    drawChart(keyData);
+  });
+  function drawChart(keyValue) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Sprints');
+    data.addColumn('number', 'NPS');
+    if (keyValue.percent.length > 1) {
+      data.addColumn('number', 'NPS 2');
+    }
+    var graphRows = [];
+    for (i = 0; i < keyValue.percent[0].length; i++) {
+      counter = parseInt(i);
+      if (keyValue.percent.length === 1) {
+        graphRows[i] = ["" + (counter + 1) + "",  keyValue.percent[0][i]];
+      } else if (keyValue.percent.length > 1) {
+       graphRows[i] = ["" + (counter + 1) + "",  keyValue.percent[0][i], keyValue.percent[1][i]];
+      }
+    }
+    data.addRows(graphRows);
+
+    var options = {
+      curveType: 'function',
+      width: 280,
+      height: 290,
+      colors: ['#FF009E','#8ee2b4'],
+      legend: { position: 'none' },
+      vAxis: {
+        viewWindow: { min: 0, max: 1 },	
+        format: "percent"
+      }
+    };
+
+    var chart = new google.charts.Line(newGraph);
+    chart.draw(data, google.charts.Line.convertOptions(options));
+  }
+}
+
+function sprintGraphOfc(value, nameGraph, valueTitle){
+  var divItem = document.createElement('div');
+  createHtml(nameGraph,divItem);
+  var infoGraph = document.createElement('div');
+  var newGraph = document.createElement('div');
+  infoGraph.className = "info-graphic";
+  divItem.appendChild(infoGraph);
+  divItem.appendChild(newGraph);
+
+  var itemInfo = document.createElement('span');
+  itemInfo.innerHTML  = "<h3>" + valueTitle + "</h3>"
+  itemInfo.innerHTML += "<span> Média </span>"
+  infoGraph.appendChild(itemInfo);
+
   google.charts.load('current', {'packages':['line']});
   google.charts.setOnLoadCallback(function(){
     drawChart(value);
@@ -195,27 +476,34 @@ function npsGraph(value){
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Sprints');
     data.addColumn('number', 'NPS');
-    data.addRows([
-      ['Sprint 1',  valueGraph[0]],
-      ['Sprint 2',  valueGraph[1]],
-      ['Sprint 3',  valueGraph[2]],
-      ['Sprint 4',  valueGraph[3]]
-    ]);
+    var graphRows = [];
+    for (i = 0; i < valueGraph.length; i++) {
+      counter = parseInt(i);
+      graphRows[i] = ["" + (counter + 1) + "",  valueGraph[i]];
+    }
+    data.addRows(graphRows);
 
     var options = {
-      chart: {
-        title: 'NPS médio por Sprint',
-      },
       curveType: 'function',
-      width: 500,
-      height: 300,
+      width: 280,
+      height: 290,
+      colors: ['#FF009E'],
+      legend: { position: 'none' },
       vAxis: {
         viewWindow: { min: 0, max: 1 },	
         format: "percent"
       }
     };
 
-    var chart = new google.charts.Line(document.getElementById('chart-NPS'));
+    var chart = new google.charts.Line(newGraph);
     chart.draw(data, google.charts.Line.convertOptions(options));
   }
+}
+
+function createHtml(nameGraph, divItemLocal){
+  var graphTitle = document.createElement('h2');
+  graphTitle.textContent = nameGraph;
+  divItemLocal.className = "item";
+  divItemLocal.appendChild(graphTitle);
+  mainContent.appendChild(divItemLocal);
 }
