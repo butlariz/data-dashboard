@@ -50,6 +50,14 @@ aside select {
     margin: 4px 0;
 }
 
+select#comparar-sede1.dropSede, select#comparar-turma1.dropTurma {
+    border: 1px solid #ff08a1;
+}
+
+select#comparar-sede2.dropSede, select#comparar-turma2.dropTurma {
+    border: 1px solid #57f89a;
+}
+
 span#date {
     width: 200px;
     text-align: right;
@@ -151,6 +159,25 @@ span.message {
     margin-bottom: 30px;
 }
 
+.item-student {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 30px;
+    margin-bottom: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    width: 42%;
+}
+
+.item-student img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
 .score-graphic{
     width: 48%;
 }
@@ -159,7 +186,7 @@ span.message {
     display: flex;
     width: 95%;
     margin: 0px 0px 27px;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .info-graphic:nth-child(2) h3 {

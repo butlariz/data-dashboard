@@ -19,9 +19,10 @@ function loadStudents(){
     var studentsImg = document.createElement('img');
     studentsImg.src = data[dropSede.value][dropTurma.value]['students'][i]['photo'];
     nameStudents = data[dropSede.value][dropTurma.value]['students'][i]['name'];
-    divName.innerHTML = nameStudents; 
+    divName.innerHTML = nameStudents;
     divStudents.appendChild(studentsImg);
     divStudents.appendChild(divName);
+    divStudents.className = "item-student"
     mainContent.appendChild(divStudents);
   }
 }
