@@ -11,6 +11,25 @@ var mainContent = document.querySelector('main');
 resultData = {};
 // timer();
 
+function loadStudents(){
+  mainContent.innerHTML='';
+  for (i in data[dropSede.value][dropTurma.value]['students']){
+    var divStudents = document.createElement('div');
+    var divName = document.createElement('div');
+    var studentsImg = document.createElement('img');
+    studentsImg.src = data[dropSede.value][dropTurma.value]['students'][i]['photo'];
+    nameStudents = data[dropSede.value][dropTurma.value]['students'][i]['name'];
+    divName.innerHTML = nameStudents; 
+    divStudents.appendChild(studentsImg);
+    divStudents.appendChild(divName);
+    mainContent.appendChild(divStudents);
+  }
+}
+  var changeStudents = document.getElementById('show-alunas');
+  changeStudents.addEventListener('click', loadStudents);
+
+
+
 function timer() {
   var d = new Date();
   document.getElementById('date').innerHTML = d.toLocaleTimeString();
@@ -295,9 +314,6 @@ function satisfaction(sede,turma){
     numberTotal.push(mediaSatisfaction);
     percentTotal.push(percentStudent);
   }
-
-  console.log(numberTotal)
-  console.log(percentTotal)
   resultData.Satisfaction = {};
   resultData.Satisfaction.name = nameSatisfaction;
   resultData.Satisfaction.number = numberTotal;
