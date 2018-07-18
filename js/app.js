@@ -2,55 +2,46 @@ var dropSede = document.getElementById('drop-sede');
 dropSede.addEventListener('change', carregaTurmas);
 var dropTurma = document.getElementById('drop-turma');
 dropTurma.addEventListener('change', loadGraph);
+var dropComparar = document.getElementById('comparar-turma2');
+dropComparar.addEventListener('change', loadCompara);
 var mainContent = document.querySelector('main');
 
-var sedeComparar1 = 'comparar-sede1';
-// var turmaComparar1 = document.getElementById('comparar-turma1');
-// sedeComparar1.addEventListener('change', carregaTurmas);
-// turmaComparar1.addEventListener('change', loadGraph);
-// var sedeComparar2 = document.getElementById('comparar-sede2');
-// var turmaComparar2 = document.getElementById('comparar-turma2');
-// sedeComparar2.addEventListener('change', carregaTurmas);
-// turmaComparar2.addEventListener('change', loadGraph);
+// timer();
 
-timer();
-
-function timer()
-{
-        var d = new Date();
-        document.getElementById('date').innerHTML = d.toLocaleTimeString();
-        setTimeout('timer()', 1000);
+function timer() {
+  var d = new Date();
+  document.getElementById('date').innerHTML = d.toLocaleTimeString();
+  setTimeout('timer()', 1000);
 }
 
 window.onload = carregaSedes();
-carregaSedesTeste(sedeComparar1);
 
-function carregaSedesTeste(divSede,divTurma){ 
-  console.log(divSede)
-  var compararSede1 = document.getElementById(divSede);
-  console.log(compararSede1);
-  var nome = document.createElement('option');
+function carregaSedes(){ 
+  var compararSede = document.getElementsByClassName("dropSede");
+  var nome = "";
+  for (i in compararSede){
+  nome = document.createElement('option');
   nome.innerHTML = 'selecione sede';
   nome.value = 'none';
-  compararSede1.appendChild(nome);
-  for (eachSede in data){
-      var itemMenu = document.createElement('option');
-      itemMenu.value = eachSede;
-      itemMenu.innerHTML = eachSede;
-      compararSede1.appendChild(itemMenu);
+  compararSede[i].appendChild(nome);
+    for (eachSede in data){
+        var itemMenu = document.createElement('option');
+        itemMenu.value = eachSede;
+        itemMenu.innerHTML = eachSede;
+        compararSede[i].appendChild(itemMenu);
+    }
   }
 }
 
-function carregaTurmasTeste(divSede,divTurma){
-  console.log(divSede)
-  var compararTurma1 = document.getElementById(divSede);
+function carregaTurmas(divSede,divTurma){
+  var compararTurma = document.getElementById(divSede).value;
   var menuTurma = document.getElementById(divTurma);
   var nome = document.createElement('option');
+  menuTurma.innerHTML='';
   nome.innerHTML = 'selecione turma';
   nome.value = 'none';
   menuTurma.appendChild(nome);
-  for (eachTurma in data[compararTurma1.value]){
-    console.log("oi");
+  for (eachTurma in data[compararTurma]){
       var itemMenu = document.createElement('option');
       itemMenu.value = eachTurma;
       itemMenu.innerHTML = eachTurma;
@@ -58,46 +49,39 @@ function carregaTurmasTeste(divSede,divTurma){
   }
 }
 
-function carregaSedes(){ 
-    var nome = document.createElement('option');
-    nome.innerHTML = 'selecione sede';
-    nome.value = 'none';
-    dropSede.appendChild(nome);
-    for (eachSede in data){
-        var itemMenu = document.createElement('option');
-        itemMenu.value = eachSede;
-        itemMenu.innerHTML = eachSede;
-        dropSede.appendChild(itemMenu);
-    }
-};
-function carregaTurmas(){
-  var nome = document.createElement('option');
-  dropTurma.innerHTML='';
-  nome.innerHTML = 'selecione turma';
-  nome.value = 'none';
-  dropTurma.appendChild(nome);
-  for (eachTurma in data[dropSede.value]){
-    console.log(eachTurma);
-      var itemMenu = document.createElement('option');
-      itemMenu.value = eachTurma;
-      itemMenu.innerHTML = eachTurma;
-      dropTurma.appendChild(itemMenu);
-
-  }
-}
-
 function loadGraph(){
+  var sede = [];
+  var turma = [];
+  sede[0] = dropSede.value;
+  turma[0] = dropTurma.value;
   mainContent.innerHTML='';
-  totalAndInactives();
-  scoreExceed();
-  nps();
-  scoreTech();
-  scoreHSE();
-  jedi();
-  teacher();
-  satisfaction();
-  
-}    
+  // totalAndInactives();
+  // scoreExceed();
+  // nps();
+  // scoreTech();
+  // scoreHSE();
+  // jedi();
+  // teacher();
+  // satisfaction();
+}   
+
+function loadCompara(){
+  var sede = [];
+  var turma = [];
+  // sede[0] = dropSede.value;
+  // turma[0] = dropTurma.value;
+  // sede[1] = dropSede.value;
+  // turma[1] = dropTurma.value;
+  // mainContent.innerHTML='';
+  // totalAndInactives();
+  // scoreExceed();
+  // nps();
+  // scoreTech();
+  // scoreHSE();
+  // jedi();
+  // teacher();
+  // satisfaction();
+}  
 
 // Contar a porcentagem de alunas ativas e inativas
 function totalAndInactives(){
@@ -319,6 +303,7 @@ function scoreGraph(value, nameGraph) {
     drawChart(value);
   });
   function drawChart(valueGraph) {
+    console.log(valueGraph)
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Sprints');
     data.addColumn('number', 'Students');
@@ -397,3 +382,4 @@ function createHtml(nameGraph, divItemLocal){
   divItemLocal.appendChild(graphTitle);
   mainContent.appendChild(divItemLocal);
 }
+
