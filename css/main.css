@@ -134,6 +134,14 @@ main {
     justify-content: space-between;
 }
 
+span.message {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-self: center;
+    align-self: center;
+}
+
 .item {
     background-color: #fff;
     padding: 30px;
