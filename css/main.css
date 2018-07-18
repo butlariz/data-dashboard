@@ -50,11 +50,11 @@ aside select {
     margin: 4px 0;
 }
 
-select#comparar-sede1.dropSede, select#comparar-turma1.dropTurma {
+select#compare-region1.dropRegion, select#compare-class1.dropClass {
     border: 1px solid #ff08a1;
 }
 
-select#comparar-sede2.dropSede, select#comparar-turma2.dropTurma {
+select#compare-region2.dropRegion, select#compare-class2.dropClass {
     border: 1px solid #57f89a;
 }
 
@@ -130,7 +130,7 @@ nav ul li a {
     color: #000;
 }
 
-nav ul li.comparar:hover {
+nav ul li.compare:hover {
     height: 170px;
 }
 

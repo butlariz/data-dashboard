@@ -1,10 +1,10 @@
-var dropSede = document.getElementById('drop-sede');
-var dropTurma = document.getElementById('drop-turma');
+var dropRegion = document.getElementById('drop-region');
+var dropTurma = document.getElementById('drop-class');
 dropTurma.addEventListener('change', loadGraph);
-var dropSede1 = document.getElementById('comparar-sede1');
-var dropTurma1 = document.getElementById('comparar-turma1');
-var dropSede2 = document.getElementById('comparar-sede2');
-var dropTurma2 = document.getElementById('comparar-turma2');
+var dropRegion1 = document.getElementById('compare-region1');
+var dropTurma1 = document.getElementById('compare-class1');
+var dropRegion2 = document.getElementById('compare-region2');
+var dropTurma2 = document.getElementById('compare-class2');
 dropTurma2.addEventListener('change', loadCompara);
 var mainContent = document.querySelector('main');
 
@@ -13,13 +13,13 @@ resultData = {};
 
 function loadStudents(){
   mainContent.innerHTML='';
-  for (i in data[dropSede.value][dropTurma.value]['students']){
+  for (i in data[dropRegion.value][dropTurma.value]['students']){
     var divStudents = document.createElement('div');
     var divName = document.createElement('div');
     var studentsImg = document.createElement('img');
-    studentsImg.src = data[dropSede.value][dropTurma.value]['students'][i]['photo'];
-    nameStudents = data[dropSede.value][dropTurma.value]['students'][i]['name'];
-    divName.innerHTML = nameStudents;
+    studentsImg.src = data[dropRegion.value][dropTurma.value]['students'][i]['photo'];
+    nameStudents = data[dropRegion.value][dropTurma.value]['students'][i]['name'];
+    divName.innerHTML = nameStudents; 
     divStudents.appendChild(studentsImg);
     divStudents.appendChild(divName);
     divStudents.className = "item-student"
@@ -37,10 +37,10 @@ function timer() {
   setTimeout('timer()', 1000);
 }
 
-window.onload = carregaSedes();
+window.onload = loadRegion();
 
-function carregaSedes(){ 
-  var compararSede = document.getElementsByClassName("dropSede");
+function loadRegion(){ 
+  var compararSede = document.getElementsByClassName("dropRegion");
   var nome = "";
   for (i in compararSede){
   nome = document.createElement('option');
@@ -56,7 +56,7 @@ function carregaSedes(){
   }
 }
 
-function carregaTurmas(divSede,divTurma){
+function loadClass(divSede,divTurma){
   var compararTurma = document.getElementById(divSede).value;
   var menuTurma = document.getElementById(divTurma);
   var nome = document.createElement('option');
@@ -75,7 +75,7 @@ function carregaTurmas(divSede,divTurma){
 function loadGraph(){
   var newSede = [];
   var newTurma = [];
-  newSede[0] = dropSede.value;
+  newSede[0] = dropRegion.value;
   newTurma[0] = dropTurma.value;
   mainContent.innerHTML='';
   totalAndInactives(newSede,newTurma)
@@ -91,9 +91,9 @@ function loadGraph(){
 function loadCompara(){
   var newSede = [];
   var newTurma = [];
-  newSede[0] = dropSede1.value;
+  newSede[0] = dropRegion1.value;
   newTurma[0] = dropTurma1.value;
-  newSede[1] = dropSede2.value;
+  newSede[1] = dropRegion2.value;
   newTurma[1] = dropTurma2.value;
   mainContent.innerHTML='';
   scoreExceed(newSede,newTurma);
