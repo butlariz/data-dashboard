@@ -7,6 +7,8 @@ var dropRegion2 = document.getElementById('compare-region2');
 var dropTurma2 = document.getElementById('compare-class2');
 dropTurma2.addEventListener('change', loadCompara);
 var mainContent = document.querySelector('main');
+var home = document.getElementById('home');
+home.addEventListener('click', loadGraph);
 
 resultData = {};
 // timer();
