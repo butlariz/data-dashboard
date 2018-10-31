@@ -4,8 +4,4 @@ Um dos problemas que a Laboratoria enfrenta, é não ter uma plataforma onde pod
 
 ## Versão 1.0 
 
-O data dashboard foi um projeto em dupla, feito em javascript puro na sua primeira versão, com o uso do google charts para os gráficos 
-
-## Versão 2.0 (em breve) 
-
-Refatorar o código com jquery, arredondar números e consertar erros. 
+O data dashboard foi um projeto em dupla, feito em javascript puro na sua primeira versão, com o uso do google charts para os gráficos. 
